@@ -49,6 +49,24 @@
   transition: height 0.5s, width 0.5s 0.5s;
 }
 
+.flip-card {
+  perspective: 1000px;
+}
+.flip-card.clicked .flip-card-inner {
+  transform: rotateY(180deg);
+}
+.flip-card-inner {
+  transform-style: preserve-3d;
+}
+
+.flip-card-front, .flip-card-back {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+.flip-card-back {
+  transform: rotateY(180deg);
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
