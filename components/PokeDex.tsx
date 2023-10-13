@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import PokeCard from "./PokeCard";
 import { usePathname } from "next/navigation";
-import { nanoid } from "nanoid";
+import { nanoid, random } from "nanoid";
 
 async function getPokemons() {
   const res = await fetch('https://pokeapi.co/api/v2/pokemon/?offset=0&limit=50');
@@ -13,9 +13,29 @@ async function getPokemons() {
   return res.json()
 }
 
+function addCardIdAndFlip(arr: any[]) {
+  return arr.map((poke) => {
+    return {
+      ...poke,
+      cardId: nanoid(),
+      flip: false,
+      isFound: false,
+    }
+  })
+}
+
 function duplicateArrayItems(arr: any[]) {
   return [...arr, arr.flat()].flat();
 }
+
+function addId(arr: any[]) {
+  return arr.map((poke) => {
+    return {
+      ...poke,
+      id: nanoid()
+    }
+  })
+} 
 
 function shuffleArray(array: any[]) {
   let len = array.length, currentIndex;
@@ -33,6 +53,9 @@ export default function PokeDex() {
   const [pokemons, setPokemons] = useState<any>(null);
   const path = usePathname();
   const [randomPokemons, setRandomPokemons] = useState<Pokemon[] | undefined>(undefined);
+  const [cardFlipped, setCardFlipped] = useState(0);
+
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>();
 
   useEffect(() => {
     getPokemons().then(res => setPokemons(res.results));
@@ -57,9 +80,42 @@ export default function PokeDex() {
   }
 
   useEffect(() => {
+    if (cardFlipped === 2) {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      
+      if(randomPokemons) {
+        const flippedCards = randomPokemons.filter(poke => poke.flip);        
+        const [poke1, poke2] = flippedCards;
+        
+        if(poke1.cardId === poke2.cardId) {
+          setRandomPokemons(prevRandomPokemons => {
+            return prevRandomPokemons?.map(poke => poke.flip ? {...poke, isFound: true} : poke);
+          })
+        }
+      }
+
+      timeoutRef.current = setTimeout(() => {
+        setRandomPokemons(prevRandomPokemons => {
+          return prevRandomPokemons?.map((poke) => poke.isFound ? poke : { ...poke, flip: false });
+        });
+      }, 1500);
+    } else if (cardFlipped === 1) {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    }
+  }, [cardFlipped]);
+
+  console.log(cardFlipped);
+
+  useEffect(() => {
     if(path === '/easy' && pokemons) {
       let pokeArray = generateRandomPokemons(pokemons, 8);
-      pokeArray = shuffleArray(duplicateArrayItems(pokeArray));
+      pokeArray = addCardIdAndFlip(pokeArray);
+      pokeArray = addId(duplicateArrayItems(pokeArray));
+      pokeArray = shuffleArray(pokeArray);
       console.log(pokeArray);
       setRandomPokemons(pokeArray);
     } else if(path === '/normal' && pokemons) {
@@ -71,11 +127,19 @@ export default function PokeDex() {
     }
   }, [pokemons]);
 
-  console.log(pokemons);
+  const memoizedRandomPokemons = useMemo(() => randomPokemons, [randomPokemons]);
+  console.log(randomPokemons);
 
   return (
     <>
-      {randomPokemons?.map((poke) => <PokeCard key={nanoid()} poke={poke} />)}
+      {memoizedRandomPokemons?.map((poke) => 
+        <PokeCard
+          key={poke.id}
+          poke={poke}
+          setRandomPokemons={setRandomPokemons}
+          cardFlipped={cardFlipped}
+          setCardFlipped={setCardFlipped}
+        />)}
     </>
   )
 };
