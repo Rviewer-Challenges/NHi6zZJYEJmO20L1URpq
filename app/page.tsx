@@ -1,15 +1,9 @@
 import DifficultyCard from "@/components/DifficultyCard"
 import { data } from "@/components/helpers/difficultyData"
-import localFont from 'next/font/local';
-
-const pokeSolid = localFont({
-  src: '../public/fonts/pokemon-solid.ttf',
-  variable: '--font-pokeSolid'
-})
 
 export default function Home() {
   return (
-    <div className={`${pokeSolid.variable} font-sans w-full min-h-screen flex flex-col items-center justify-center px-4 py-6`}>
+    <div className="font-sans w-full min-h-screen flex flex-col items-center justify-center px-4 py-6">
       <header className="mb-6 lg:mb-10">
         <h1 className="text-3xl xs:text-4xl lg:text-5xl text-center text-[#EDBC06] font-poke">MEMORY GAME</h1>
       </header>

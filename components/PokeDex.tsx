@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import PokeCard from "./PokeCard";
 import { usePathname } from "next/navigation";
 import { nanoid, random } from "nanoid";
+import { GameDetails } from "./GameDetails";
 
 async function getPokemons() {
   const res = await fetch('https://pokeapi.co/api/v2/pokemon/?offset=0&limit=50');
@@ -137,17 +138,20 @@ export default function PokeDex() {
   console.log(randomPokemons);
 
   return (
-    <>
-      {memoizedRandomPokemons?.map((poke) => 
-        <PokeCard
-          key={poke.id}
-          poke={poke}
-          randomPokemons={randomPokemons}
-          setRandomPokemons={setRandomPokemons}
-          cardFlipped={cardFlipped}
-          setCardFlipped={setCardFlipped}
-          exposeMatchers={exposeMatchers}
-        />)}
-    </>
+    <div className="flex w-full justify-around">
+      <GameDetails />
+      <div className="flex flex-wrap gap-4 max-w-2xl">
+        {memoizedRandomPokemons?.map((poke) => 
+          <PokeCard
+            key={poke.id}
+            poke={poke}
+            randomPokemons={randomPokemons}
+            setRandomPokemons={setRandomPokemons}
+            cardFlipped={cardFlipped}
+            setCardFlipped={setCardFlipped}
+            exposeMatchers={exposeMatchers}
+          />)}
+      </div>
+    </div>
   )
 };

@@ -1,5 +1,11 @@
 import './globals.css'
 import type { Metadata } from 'next'
+import localFont from 'next/font/local';
+
+const pokeSolid = localFont({
+  src: '../public/fonts/pokemon-solid.ttf',
+  variable: '--font-pokeSolid'
+})
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -13,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className='bg-[#2C7ABC]'>{children}</body>
+      <body className={`${pokeSolid.variable} bg-[#2C7ABC]`}>{children}</body>
     </html>
   )
 }
