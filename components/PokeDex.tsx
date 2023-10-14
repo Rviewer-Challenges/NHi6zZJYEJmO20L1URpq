@@ -49,6 +49,21 @@ function shuffleArray(array: any[]) {
   return shuffledArray; // Return the shuffled copy
 }
 
+function exposeMatchers(arr: Pokemon[] | undefined, setArr: React.Dispatch<React.SetStateAction<Pokemon[] | undefined>>) {
+  if(arr) {
+    const flippedCards = arr.filter(poke => poke.flip && !poke.isFound);
+    if(flippedCards.length > 1) {
+      const [poke1, poke2] = flippedCards;
+  
+      if(poke1.cardId === poke2.cardId) {
+        setArr(prevArr => {
+          return prevArr?.map(poke => poke.flip ? { ...poke, isFound: true } : poke);
+        })
+      }
+    }      
+  }
+}
+
 export default function PokeDex() {
   const [pokemons, setPokemons] = useState<any>(null);
   const path = usePathname();
@@ -85,16 +100,7 @@ export default function PokeDex() {
         clearTimeout(timeoutRef.current);
       }
       
-      if(randomPokemons) {
-        const flippedCards = randomPokemons.filter(poke => poke.flip);        
-        const [poke1, poke2] = flippedCards;
-        
-        if(poke1.cardId === poke2.cardId) {
-          setRandomPokemons(prevRandomPokemons => {
-            return prevRandomPokemons?.map(poke => poke.flip ? {...poke, isFound: true} : poke);
-          })
-        }
-      }
+      exposeMatchers(randomPokemons, setRandomPokemons);
 
       timeoutRef.current = setTimeout(() => {
         setRandomPokemons(prevRandomPokemons => {
@@ -136,9 +142,11 @@ export default function PokeDex() {
         <PokeCard
           key={poke.id}
           poke={poke}
+          randomPokemons={randomPokemons}
           setRandomPokemons={setRandomPokemons}
           cardFlipped={cardFlipped}
           setCardFlipped={setCardFlipped}
+          exposeMatchers={exposeMatchers}
         />)}
     </>
   )
