@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import PokeCard from "./PokeCard";
 import { usePathname } from "next/navigation";
-import { nanoid, random } from "nanoid";
+import { nanoid } from "nanoid";
 import { GameDetails } from "./GameDetails";
 
 async function getPokemons() {
@@ -70,12 +70,33 @@ export default function PokeDex() {
   const path = usePathname();
   const [randomPokemons, setRandomPokemons] = useState<Pokemon[] | undefined>(undefined);
   const [cardFlipped, setCardFlipped] = useState(0);
+  const [isEnd, setIsEnd] = useState(false);
+  const [timer, setTimer] = useState(60);
+  const [pairs, setPairs] = useState<number | undefined>(undefined);
+  const [moveCounter, setMoveCounter] = useState(0);
 
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>();
 
   useEffect(() => {
     getPokemons().then(res => setPokemons(res.results));
   }, []);
+
+  useEffect(() => {
+    const countdown = setInterval(() => {
+      if(timer > 0) {
+        setTimer(prevTimer => prevTimer - 1);
+      } else {
+        clearInterval(countdown);
+      }
+    }, 1000);
+
+    return () => clearInterval(countdown);
+  }, [timer])
+
+  useEffect(() => {
+    const notFounds = randomPokemons?.filter(poke => !poke.isFound);
+    setPairs(notFounds && notFounds.length / 2);
+  }, [randomPokemons])
 
   const generateRandomPokemons = (arr: any[], limit: number) => {
     const copyArr = arr.slice();
@@ -125,12 +146,15 @@ export default function PokeDex() {
       pokeArray = shuffleArray(pokeArray);
       console.log(pokeArray);
       setRandomPokemons(pokeArray);
+      setPairs(8);
     } else if(path === '/normal' && pokemons) {
       const pokeArray = generateRandomPokemons(pokemons, 12);
       setRandomPokemons(pokeArray);
+      setPairs(12);
     } else if(path === '/hard' && pokemons) {
       const pokeArray = generateRandomPokemons(pokemons, 15);
       setRandomPokemons(pokeArray);
+      setPairs(15);
     }
   }, [pokemons]);
 
@@ -138,9 +162,12 @@ export default function PokeDex() {
   console.log(randomPokemons);
 
   return (
-    <div className="flex w-full justify-around">
-      <GameDetails />
-      <div className="flex flex-wrap gap-4 max-w-2xl">
+    <div className="flex flex-col w-full py-4 items-center lg:flex-row lg:justify-around lg:items-stretch">
+      <GameDetails
+        timer={timer}
+        pairs={pairs}
+      />
+      <div className="grid grid-cols-2 w-max max-w-2xl gap-2 2xs:gap-4 xs:grid-cols-4 justify-center">
         {memoizedRandomPokemons?.map((poke) => 
           <PokeCard
             key={poke.id}

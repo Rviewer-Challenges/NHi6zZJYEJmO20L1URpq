@@ -20,7 +20,7 @@ export default function DifficultyCard({ item }: { item: Difficulty }) {
           />
         </Link>
       </div>
-      <h3 className="text-xl font-poke lg:text-[22px]">{item.name}</h3>
+      <h3 className="text-xl font-poke lg:text-[22px] tracking-wider">{item.name}</h3>
     </div>
   )
 }
