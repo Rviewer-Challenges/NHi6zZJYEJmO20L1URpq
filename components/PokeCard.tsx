@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { exposeMatchers } from "./utils/functions"; 
 
 interface PokeCardProps {
   poke: Pokemon;
@@ -9,7 +10,7 @@ interface PokeCardProps {
   setRandomPokemons: Dispatch<SetStateAction<Pokemon[] | undefined>>;
   cardFlipped: number;
   setCardFlipped: Dispatch<SetStateAction<number>>;
-  exposeMatchers: (arr: Pokemon[] | undefined, setArr: React.Dispatch<React.SetStateAction<Pokemon[] | undefined>>) => void;
+  isEnd: boolean;
 }
 
 async function getPokemon(url: string) {
@@ -20,7 +21,7 @@ async function getPokemon(url: string) {
   return res.json()
 }
 
-export default function PokeCard({ poke, randomPokemons, setRandomPokemons, cardFlipped, setCardFlipped, exposeMatchers }: PokeCardProps) {
+export default function PokeCard({ poke, randomPokemons, setRandomPokemons, cardFlipped, setCardFlipped, isEnd }: PokeCardProps) {
   const [pokemon, setPokemon] = useState<string>();
 
   useEffect(() => {
@@ -59,7 +60,7 @@ export default function PokeCard({ poke, randomPokemons, setRandomPokemons, card
   };
   
   return (
-    <div className={`w-32 h-32 flip-card bg-transparent justify-self-center ${poke.flip && 'clicked'}`} onClick={() => handleFlip(poke.id)}>
+    <div className={`w-32 h-32 flip-card bg-transparent justify-self-center ${poke.flip && 'clicked'}`} onClick={() => !isEnd && handleFlip(poke.id)}>
       <div className="flip-card-inner relative w-full h-full transition-transform duration-[600ms] shadow-[0_4px_8px_0_rbga(0,0,0,0.2)]">
         <div className="flip-card-front absolute w-full h-full bg-[#1D2C5E] text-white border-2 border-[#C7A008] flex justify-center items-center">
           <Image
