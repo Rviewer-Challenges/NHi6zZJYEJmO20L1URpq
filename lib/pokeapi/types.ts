@@ -10,6 +10,13 @@ export interface PokemonCard extends Pokemon {
   id: string;
 }
 
+export interface RootPokemonResponse {
+  count: number
+  next: string
+  previous: string | null;
+  results: PokemonResponse[]
+}
+
 export interface PokemonResponse {
   name: string;
   url: string;

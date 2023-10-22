@@ -7,7 +7,7 @@ import { GameDetails } from "./GameDetails";
 import ReactConfetti from "./ReactConfetti";
 import { exposeMatchers, finalPokemonArray, generateRandomPokemons } from "./utils/functions";
 import CountdownBeforeStart from "./CountdownBeforeStart";
-import { PokemonCard, PokemonResponse } from "@/lib/pokeapi/types";
+import { PokemonCard, PokemonResponse, RootPokemonResponse } from "@/lib/pokeapi/types";
 
 interface PokeDexProps {
   containerClass: string;
@@ -21,7 +21,8 @@ async function getPokemons() {
   if (!res.ok) {
     throw new Error('Failed to fetch data')
   }
-  return res.json()
+  const data: RootPokemonResponse = await res.json();
+  return data;
 };
 
 export default function PokeDex({ containerClass, gridClass, cardWidth, imageSize }: PokeDexProps) {

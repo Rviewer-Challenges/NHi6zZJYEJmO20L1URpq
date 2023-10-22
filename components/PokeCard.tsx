@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { exposeMatchers } from "./utils/functions"; 
-import { PokemonCard } from "@/lib/pokeapi/types";
+import { PokemonCard, Sprites } from "@/lib/pokeapi/types";
 
 interface PokeCardProps {
   cardWidth?: string;
@@ -21,7 +21,9 @@ async function getPokemon(url: string) {
   if (!res.ok) {
     throw new Error('Failed to fetch data');
   }
-  return res.json();
+  const data = await res.json();
+  const sprites: Sprites = data.sprites;
+  return sprites;
 }
 
 export default function PokeCard({ cardWidth, imageSize, poke, randomPokemons, setRandomPokemons, cardFlipped, setCardFlipped, isEnd }: PokeCardProps) {
@@ -29,7 +31,7 @@ export default function PokeCard({ cardWidth, imageSize, poke, randomPokemons, s
 
   useEffect(() => {
     getPokemon(poke.url)
-    .then(res => setPokemon(res.sprites.other['official-artwork'].front_default))
+    .then(res => setPokemon(res.other['official-artwork'].front_default))
     .catch(err => console.error(err));
   }, []);
 
