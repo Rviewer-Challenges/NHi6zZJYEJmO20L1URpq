@@ -5,7 +5,15 @@ import PokeCard from "./PokeCard";
 import { usePathname } from "next/navigation";
 import { GameDetails } from "./GameDetails";
 import ReactConfetti from "./ReactConfetti";
-import { addCardIdAndFlip, addId, duplicateArrayItems, exposeMatchers, finalPokemonArray, generateRandomPokemons, shuffleArray } from "./utils/functions";
+import { exposeMatchers, finalPokemonArray, generateRandomPokemons } from "./utils/functions";
+import CountdownBeforeStart from "./CountdownBeforeStart";
+
+interface PokeDexProps {
+  containerClass: string;
+  gridClass: string;
+  cardWidth?: string;
+  imageSize?: number;
+}
 
 async function getPokemons() {
   const res = await fetch('https://pokeapi.co/api/v2/pokemon/?offset=0&limit=50');
@@ -15,10 +23,11 @@ async function getPokemons() {
   return res.json()
 };
 
-export default function PokeDex() {
+export default function PokeDex({ containerClass, gridClass, cardWidth, imageSize }: PokeDexProps) {
   const path = usePathname();
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>();
 
+  const [startIn, setStartIn] = useState(5);
   const [pokemons, setPokemons] = useState<any>(null);
   const [randomPokemons, setRandomPokemons] = useState<Pokemon[] | undefined>(undefined);
   const [cardFlipped, setCardFlipped] = useState(0);
@@ -52,7 +61,19 @@ export default function PokeDex() {
 
   useEffect(() => {
     const countdown = setInterval(() => {
-      if(timer > 0) {
+      if(startIn > 0) {
+        setStartIn(prevStartIn => prevStartIn - 1);
+      } else {
+        clearInterval(countdown);
+      }
+    }, 1000);
+
+    return () => clearInterval(countdown);
+  }, [startIn])
+
+  useEffect(() => {
+    const countdown = setInterval(() => {
+      if(timer > 0 && startIn === 0) {
         setTimer(prevTimer => prevTimer - 1);
       } else {
         clearInterval(countdown);
@@ -68,7 +89,7 @@ export default function PokeDex() {
     }
 
     return () => clearInterval(countdown);
-  }, [timer])
+  }, [startIn, timer])
 
   useEffect(() => {
     // check the not found pokemons, half of them will give the number of pairs left
@@ -107,16 +128,19 @@ export default function PokeDex() {
   const memoizedRandomPokemons = useMemo(() => randomPokemons, [randomPokemons]);
 
   return (
-    <div className="flex flex-col w-full py-4 items-center lg:flex-row lg:justify-around lg:items-stretch">
+    <div className={containerClass}>
+      {startIn > 0 && <CountdownBeforeStart countdown={startIn} />}
       <GameDetails
         timer={timer}
         pairs={pairs}
         moveCounter={moveCounter}
       />
-      <div className="grid grid-cols-2 w-max max-w-2xl gap-2 2xs:gap-4 xs:grid-cols-4 justify-center">
+      <div className={gridClass}>
         {memoizedRandomPokemons?.map((poke) => 
           <PokeCard
             key={poke.id}
+            cardWidth={cardWidth}
+            imageSize={imageSize}
             poke={poke}
             randomPokemons={randomPokemons}
             setRandomPokemons={setRandomPokemons}

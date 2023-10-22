@@ -5,6 +5,8 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { exposeMatchers } from "./utils/functions"; 
 
 interface PokeCardProps {
+  cardWidth?: string;
+  imageSize?: number;
   poke: Pokemon;
   randomPokemons: Pokemon[] | undefined;
   setRandomPokemons: Dispatch<SetStateAction<Pokemon[] | undefined>>;
@@ -21,7 +23,7 @@ async function getPokemon(url: string) {
   return res.json()
 }
 
-export default function PokeCard({ poke, randomPokemons, setRandomPokemons, cardFlipped, setCardFlipped, isEnd }: PokeCardProps) {
+export default function PokeCard({ cardWidth, imageSize, poke, randomPokemons, setRandomPokemons, cardFlipped, setCardFlipped, isEnd }: PokeCardProps) {
   const [pokemon, setPokemon] = useState<string>();
 
   useEffect(() => {
@@ -60,15 +62,15 @@ export default function PokeCard({ poke, randomPokemons, setRandomPokemons, card
   };
   
   return (
-    <div className={`w-32 h-32 flip-card bg-transparent justify-self-center ${poke.flip && 'clicked'}`} onClick={() => !isEnd && handleFlip(poke.id)}>
+    <div className={`${cardWidth || 'w-32 h-32'} flip-card bg-transparent justify-self-center ${poke.flip && 'clicked'}`} onClick={() => !isEnd && handleFlip(poke.id)}>
       <div className="flip-card-inner relative w-full h-full transition-transform duration-[600ms] shadow-[0_4px_8px_0_rbga(0,0,0,0.2)]">
         <div className="flip-card-front absolute w-full h-full bg-[#1D2C5E] text-white border-2 border-[#C7A008] flex justify-center items-center">
           <Image
             alt="Pokeball"
             src={'/pokeball.png'}
-            width={100}
-            height={100}
-            className="h-auto"
+            width={imageSize || 100}
+            height={imageSize || 100}
+            className="h-auto select-none"
             priority
           />
         </div>
@@ -76,9 +78,9 @@ export default function PokeCard({ poke, randomPokemons, setRandomPokemons, card
           <Image
             alt={poke.name}
             src={pokemon || "/pokeball.png"}
-            width={128}
-            height={128}
-            className="h-auto"
+            width={imageSize || 100}
+            height={imageSize || 100}
+            className="h-auto select-none"
             priority
           />
         </div>
