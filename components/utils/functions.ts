@@ -1,8 +1,9 @@
+import { Pokemon, PokemonCard, PokemonResponse } from "@/lib/pokeapi/types";
 import { nanoid } from "nanoid";
 
-export function generateRandomPokemons(arr: any[], limit: number) {
+export function generateRandomPokemons(arr: PokemonResponse[], limit: number) {
   const copyArr = arr.slice();
-  const randomItems: any[] = [];
+  const randomItems: PokemonResponse[] = [];
   if(limit <= arr.length) {
     while(randomItems.length < limit) {
       const randomIndex = Math.floor(Math.random() * copyArr.length);
@@ -18,7 +19,7 @@ export function generateRandomPokemons(arr: any[], limit: number) {
   return randomItems;
 }
 
-export function addCardIdAndFlip(arr: any[]) {
+export function addCardIdAndFlip(arr: PokemonResponse[]) {
   return arr.map((poke) => {
     return {
       ...poke,
@@ -29,11 +30,11 @@ export function addCardIdAndFlip(arr: any[]) {
   })
 }
 
-export function duplicateArrayItems(arr: any[]) {
+export function duplicateArrayItems(arr: Pokemon[]) {
   return [...arr, arr.flat()].flat();
 }
 
-export function addId(arr: any[]) {
+export function addId(arr: Pokemon[]) {
   return arr.map((poke) => {
     return {
       ...poke,
@@ -42,7 +43,7 @@ export function addId(arr: any[]) {
   })
 }
 
-export function shuffleArray(array: any[]) {
+export function shuffleArray(array: PokemonCard[]) {
   let len = array.length, currentIndex;
   let shuffledArray = [...array]; // Make a copy of the original array
   for (currentIndex = len - 1; currentIndex > 0; currentIndex--) {
@@ -54,14 +55,14 @@ export function shuffleArray(array: any[]) {
   return shuffledArray; // Return the shuffled copy
 }
 
-export function finalPokemonArray(arr: any[]) {
-  arr = addCardIdAndFlip(arr);
-  arr = addId(duplicateArrayItems(arr));
-  arr = shuffleArray(arr);
-  return arr;
+export function finalPokemonArray(arr: PokemonResponse[]) {
+  let newPokeArr = addCardIdAndFlip(arr);
+  let pokeCardArr = addId(duplicateArrayItems(newPokeArr));
+  pokeCardArr = shuffleArray(pokeCardArr);
+  return pokeCardArr;
 }
 
-export function exposeMatchers(arr: Pokemon[] | undefined, setArr: React.Dispatch<React.SetStateAction<Pokemon[] | undefined>>) {
+export function exposeMatchers(arr: PokemonCard[] | undefined, setArr: React.Dispatch<React.SetStateAction<PokemonCard[] | undefined>>) {
   if(arr) {
     const flippedCards = arr.filter(poke => poke.flip && !poke.isFound);
     if(flippedCards.length > 1) {

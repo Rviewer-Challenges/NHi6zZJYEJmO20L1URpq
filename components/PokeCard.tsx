@@ -3,13 +3,14 @@
 import Image from "next/image";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { exposeMatchers } from "./utils/functions"; 
+import { PokemonCard } from "@/lib/pokeapi/types";
 
 interface PokeCardProps {
   cardWidth?: string;
   imageSize?: number;
-  poke: Pokemon;
-  randomPokemons: Pokemon[] | undefined;
-  setRandomPokemons: Dispatch<SetStateAction<Pokemon[] | undefined>>;
+  poke: PokemonCard;
+  randomPokemons: PokemonCard[] | undefined;
+  setRandomPokemons: Dispatch<SetStateAction<PokemonCard[] | undefined>>;
   cardFlipped: number;
   setCardFlipped: Dispatch<SetStateAction<number>>;
   isEnd: boolean;
@@ -18,9 +19,9 @@ interface PokeCardProps {
 async function getPokemon(url: string) {
   const res = await fetch(url);
   if (!res.ok) {
-    throw new Error('Failed to fetch data')
+    throw new Error('Failed to fetch data');
   }
-  return res.json()
+  return res.json();
 }
 
 export default function PokeCard({ cardWidth, imageSize, poke, randomPokemons, setRandomPokemons, cardFlipped, setCardFlipped, isEnd }: PokeCardProps) {
@@ -30,7 +31,7 @@ export default function PokeCard({ cardWidth, imageSize, poke, randomPokemons, s
     getPokemon(poke.url)
     .then(res => setPokemon(res.sprites.other['official-artwork'].front_default))
     .catch(err => console.error(err));
-  }, [])
+  }, []);
 
   const handleFlip = (id: string) => {
     if (cardFlipped < 2 && !poke.isFound) {

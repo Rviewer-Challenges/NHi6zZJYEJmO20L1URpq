@@ -7,6 +7,7 @@ import { GameDetails } from "./GameDetails";
 import ReactConfetti from "./ReactConfetti";
 import { exposeMatchers, finalPokemonArray, generateRandomPokemons } from "./utils/functions";
 import CountdownBeforeStart from "./CountdownBeforeStart";
+import { PokemonCard, PokemonResponse } from "@/lib/pokeapi/types";
 
 interface PokeDexProps {
   containerClass: string;
@@ -28,8 +29,8 @@ export default function PokeDex({ containerClass, gridClass, cardWidth, imageSiz
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>();
 
   const [startIn, setStartIn] = useState(5);
-  const [pokemons, setPokemons] = useState<any>(null);
-  const [randomPokemons, setRandomPokemons] = useState<Pokemon[] | undefined>(undefined);
+  const [pokemons, setPokemons] = useState<PokemonResponse[] | null>(null);
+  const [randomPokemons, setRandomPokemons] = useState<PokemonCard[] | undefined>(undefined);
   const [cardFlipped, setCardFlipped] = useState(0);
   const [isEnd, setIsEnd] = useState(false);
   const [timer, setTimer] = useState(60);
@@ -43,18 +44,18 @@ export default function PokeDex({ containerClass, gridClass, cardWidth, imageSiz
   useEffect(() => {
     if(path === '/easy' && pokemons) {
       let pokeArray = generateRandomPokemons(pokemons, 8);
-      pokeArray = finalPokemonArray(pokeArray);
-      setRandomPokemons(pokeArray);
+      let pokeCardsArray = finalPokemonArray(pokeArray);
+      setRandomPokemons(pokeCardsArray);
       setPairs(8);
     } else if(path === '/normal' && pokemons) {
       let pokeArray = generateRandomPokemons(pokemons, 12);
-      pokeArray = finalPokemonArray(pokeArray);
-      setRandomPokemons(pokeArray);
+      let pokeCardsArray = finalPokemonArray(pokeArray);
+      setRandomPokemons(pokeCardsArray);
       setPairs(12);
     } else if(path === '/hard' && pokemons) {
       let pokeArray = generateRandomPokemons(pokemons, 15);
-      pokeArray = finalPokemonArray(pokeArray);
-      setRandomPokemons(pokeArray);
+      let pokeCardsArray = finalPokemonArray(pokeArray);
+      setRandomPokemons(pokeCardsArray);
       setPairs(15);
     }
   }, [pokemons]);
