@@ -6,7 +6,7 @@ async function delay(num: number) {
 
 export default async function EasyLevel() {
 
-  await delay(10000);
+  await delay(3000);
   return (
     <div className="flex w-full min-h-screen items-center">
       <PokeDex 

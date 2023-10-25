@@ -8,6 +8,7 @@ import ReactConfetti from "./ReactConfetti";
 import { exposeMatchers, finalPokemonArray, generateRandomPokemons } from "./utils/functions";
 import CountdownBeforeStart from "./CountdownBeforeStart";
 import { PokemonCard, PokemonResponse, RootPokemonResponse } from "@/lib/pokeapi/types";
+import Result from "./Result";
 
 interface PokeDexProps {
   containerClass: string;
@@ -75,23 +76,20 @@ export default function PokeDex({ containerClass, gridClass, cardWidth, imageSiz
 
   useEffect(() => {
     const countdown = setInterval(() => {
-      if(timer > 0 && startIn === 0) {
-        setTimer(prevTimer => prevTimer - 1);
-      } else {
+      if (timer <= 0 || pairs === 0) {
+        setIsEnd(true);
         clearInterval(countdown);
+      } else if (startIn === 0) {
+        setTimer(prevTimer => prevTimer - 1);
       }
     }, 1000);
 
-    if(isEnd) {
-      clearInterval(countdown);
-    }
-
-    if(pairs === 0 || timer === 0) {
+    if (pairs === 0 || timer === 0) {
       setIsEnd(true);
     }
 
     return () => clearInterval(countdown);
-  }, [startIn, timer])
+  }, [startIn, timer, pairs]);
 
   useEffect(() => {
     // check the not found pokemons, half of them will give the number of pairs left
@@ -136,21 +134,22 @@ export default function PokeDex({ containerClass, gridClass, cardWidth, imageSiz
         timer={timer}
         pairs={pairs}
         moveCounter={moveCounter}
-      />
+        />
       <div className={gridClass}>
         {memoizedRandomPokemons?.map((poke) => 
           <PokeCard
-            key={poke.id}
-            cardWidth={cardWidth}
-            imageSize={imageSize}
-            poke={poke}
-            randomPokemons={randomPokemons}
-            setRandomPokemons={setRandomPokemons}
-            cardFlipped={cardFlipped}
-            setCardFlipped={setCardFlipped}
-            isEnd={isEnd}
+          key={poke.id}
+          cardWidth={cardWidth}
+          imageSize={imageSize}
+          poke={poke}
+          randomPokemons={randomPokemons}
+          setRandomPokemons={setRandomPokemons}
+          cardFlipped={cardFlipped}
+          setCardFlipped={setCardFlipped}
+          isEnd={isEnd}
           />)}
       </div>
+      {isEnd && <Result message={pairs === 0 ? {top: "You Win!", bottom: "Congratulations!"} : {top: "Time is Up!", bottom: "Better Luck Next Time!"}} />}
       {pairs === 0 && <ReactConfetti />}
     </div>
   )

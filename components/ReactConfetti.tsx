@@ -10,6 +10,7 @@ export default function ReactConfetti() {
     <Confetti
       width={width}
       height={height}
+      numberOfPieces={300}
     />
   )
 }
