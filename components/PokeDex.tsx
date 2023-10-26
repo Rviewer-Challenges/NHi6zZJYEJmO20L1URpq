@@ -76,15 +76,17 @@ export default function PokeDex({ containerClass, gridClass, cardWidth, imageSiz
 
   useEffect(() => {
     const countdown = setInterval(() => {
-      if (timer <= 0 || pairs === 0) {
+      if ((timer <= 0 || pairs === 0) && startIn === 0) {
         setIsEnd(true);
         clearInterval(countdown);
+        console.log("inside");
+        console.log(startIn);
       } else if (startIn === 0) {
         setTimer(prevTimer => prevTimer - 1);
       }
     }, 1000);
 
-    if (pairs === 0 || timer === 0) {
+    if ((pairs === 0 || timer === 0) && startIn === 0) {
       setIsEnd(true);
     }
 
@@ -127,6 +129,16 @@ export default function PokeDex({ containerClass, gridClass, cardWidth, imageSiz
 
   const memoizedRandomPokemons = useMemo(() => randomPokemons, [randomPokemons]);
 
+  function playAgain() {
+    setStartIn(5);
+    getPokemons().then(res => setPokemons(res.results));
+    
+    setCardFlipped(0);
+    setIsEnd(false);
+    setTimer(60);
+    setMoveCounter(0);
+  }
+
   return (
     <div className={containerClass}>
       {startIn > 0 && <CountdownBeforeStart countdown={startIn} />}
@@ -149,7 +161,11 @@ export default function PokeDex({ containerClass, gridClass, cardWidth, imageSiz
           isEnd={isEnd}
           />)}
       </div>
-      {isEnd && <Result message={pairs === 0 ? {top: "You Win!", bottom: "Congratulations!"} : {top: "Time is Up!", bottom: "Better Luck Next Time!"}} />}
+      {isEnd &&
+      <Result
+        message={pairs === 0 ? {top: "You Won!", bottom: "Congratulations!"} : {top: "Time is Up!", bottom: "Better Luck Next Time!"}}
+        playAgain={playAgain}
+      />}
       {pairs === 0 && <ReactConfetti />}
     </div>
   )
