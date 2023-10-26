@@ -9,6 +9,7 @@ import { exposeMatchers, finalPokemonArray, generateRandomPokemons } from "./uti
 import CountdownBeforeStart from "./CountdownBeforeStart";
 import { PokemonCard, PokemonResponse, RootPokemonResponse } from "@/lib/pokeapi/types";
 import Result from "./Result";
+import CardsLoadingSkeleton from "./CardSkeleton";
 
 interface PokeDexProps {
   containerClass: string;
@@ -32,6 +33,7 @@ export default function PokeDex({ containerClass, gridClass, cardWidth, imageSiz
 
   const [startIn, setStartIn] = useState(5);
   const [pokemons, setPokemons] = useState<PokemonResponse[] | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [randomPokemons, setRandomPokemons] = useState<PokemonCard[] | undefined>(undefined);
   const [cardFlipped, setCardFlipped] = useState(0);
   const [isEnd, setIsEnd] = useState(false);
@@ -40,7 +42,10 @@ export default function PokeDex({ containerClass, gridClass, cardWidth, imageSiz
   const [moveCounter, setMoveCounter] = useState(0);
 
   useEffect(() => {
-    getPokemons().then(res => setPokemons(res.results));
+    getPokemons().then((res) => {
+      setPokemons(res.results);
+      setIsLoading(false);
+    });
   }, []);
 
   useEffect(() => {
@@ -79,8 +84,6 @@ export default function PokeDex({ containerClass, gridClass, cardWidth, imageSiz
       if ((timer <= 0 || pairs === 0) && startIn === 0) {
         setIsEnd(true);
         clearInterval(countdown);
-        console.log("inside");
-        console.log(startIn);
       } else if (startIn === 0) {
         setTimer(prevTimer => prevTimer - 1);
       }
@@ -131,7 +134,11 @@ export default function PokeDex({ containerClass, gridClass, cardWidth, imageSiz
 
   function playAgain() {
     setStartIn(5);
-    getPokemons().then(res => setPokemons(res.results));
+    setIsLoading(true);
+    getPokemons().then((res) => {
+      setPokemons(res.results);
+      setIsLoading(false);
+    });
     
     setCardFlipped(0);
     setIsEnd(false);
@@ -148,18 +155,21 @@ export default function PokeDex({ containerClass, gridClass, cardWidth, imageSiz
         moveCounter={moveCounter}
         />
       <div className={gridClass}>
-        {memoizedRandomPokemons?.map((poke) => 
-          <PokeCard
-          key={poke.id}
-          cardWidth={cardWidth}
-          imageSize={imageSize}
-          poke={poke}
-          randomPokemons={randomPokemons}
-          setRandomPokemons={setRandomPokemons}
-          cardFlipped={cardFlipped}
-          setCardFlipped={setCardFlipped}
-          isEnd={isEnd}
-          />)}
+        {isLoading ? 
+          <CardsLoadingSkeleton cardWidth={cardWidth} /> :
+          memoizedRandomPokemons?.map((poke) => 
+            <PokeCard
+            key={poke.id}
+            cardWidth={cardWidth}
+            imageSize={imageSize}
+            poke={poke}
+            randomPokemons={randomPokemons}
+            setRandomPokemons={setRandomPokemons}
+            cardFlipped={cardFlipped}
+            setCardFlipped={setCardFlipped}
+            isEnd={isEnd}
+            />)
+          }
       </div>
       {isEnd &&
       <Result
