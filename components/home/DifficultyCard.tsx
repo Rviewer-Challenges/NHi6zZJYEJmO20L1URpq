@@ -11,6 +11,7 @@ export default function DifficultyCard({ item }: { item: Difficulty }) {
             alt={item.name}
             src={item.img}
             className="w-full h-full relative z-10"
+            priority
           />
         </Link>
       </div>

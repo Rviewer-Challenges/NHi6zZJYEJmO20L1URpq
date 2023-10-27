@@ -67,7 +67,7 @@ export default function PokeCard({ cardWidth, imageSize, poke, randomPokemons, s
         <div className="flip-card-back absolute w-full h-full bg-[#1D2C5E] text-white border-2 border-[#C7A008] flex justify-center items-center">
           <Image
             alt={poke.name}
-            src={pokemon || "/pokeball.png"}
+            src={pokemon || "/no-pokemon.svg"}
             width={imageSize || 100}
             height={imageSize || 100}
             className="h-auto select-none"
