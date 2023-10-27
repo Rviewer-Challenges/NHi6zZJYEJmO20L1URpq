@@ -1,6 +1,7 @@
+import { IGameDetailsProps } from "@/lib/types";
 import Link from "next/link";
 
-export function GameDetails({ timer, pairs, moveCounter }: { timer: number; pairs: number | undefined; moveCounter: number }) {
+export function GameDetails({ timer, pairs, moveCounter }: IGameDetailsProps) {
   return (
     <div className="text-[#EDBC06] font-poke flex flex-col items-start gap-y-3 pb-4 tracking-widest lg:gap-y-8 lg:justify-between lg:p-2">
       <div className="flex flex-col gap-y-6">

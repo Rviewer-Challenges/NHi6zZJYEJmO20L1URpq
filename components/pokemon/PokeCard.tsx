@@ -1,33 +1,11 @@
 'use client';
 
 import Image from "next/image";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { exposeMatchers } from "../../utils/functions"; 
-import { PokemonCard, Sprites } from "@/lib/pokeapi/types";
+import { useEffect, useState } from "react";
+import { exposeMatchers, getPokemon } from "../../utils/functions";
+import { IPokeCardProps } from "@/lib/types";
 
-interface PokeCardProps {
-  cardWidth?: string;
-  imageSize?: number;
-  poke: PokemonCard;
-  randomPokemons: PokemonCard[] | undefined;
-  setRandomPokemons: Dispatch<SetStateAction<PokemonCard[] | undefined>>;
-  cardFlipped: number;
-  setCardFlipped: Dispatch<SetStateAction<number>>;
-  isEnd: boolean;
-  setError: Dispatch<SetStateAction<boolean>>
-}
-
-async function getPokemon(url: string) {
-  const res = await fetch(url);
-  if (!res.ok) {
-    throw new Error('Failed to fetch data');
-  }
-  const data = await res.json();
-  const sprites: Sprites = data.sprites;
-  return sprites;
-}
-
-export default function PokeCard({ cardWidth, imageSize, poke, randomPokemons, setRandomPokemons, cardFlipped, setCardFlipped, isEnd, setError }: PokeCardProps) {
+export default function PokeCard({ cardWidth, imageSize, poke, randomPokemons, setRandomPokemons, cardFlipped, setCardFlipped, isEnd, setError }: IPokeCardProps) {
   const [pokemon, setPokemon] = useState<string>();
 
   useEffect(() => {
@@ -40,6 +18,11 @@ export default function PokeCard({ cardWidth, imageSize, poke, randomPokemons, s
   }, []);
 
   const handleFlip = (id: string) => {
+    /* when user clicks a card there is at least 1 card flipped.
+    User can flip a card but can't flip more than 2 at the same time.
+    If clicked card is not already found it'll be flipped. In the second condition,
+    if there are already 2 flipped cards and user clicks one of them again, 
+    it keeps the clicked one flipped and flips back the other one */
     if (cardFlipped < 2 && !poke.isFound) {
       setCardFlipped(prevCardFlipped => prevCardFlipped + 1);
       setRandomPokemons(prevRandomPokemons => {

@@ -1,4 +1,6 @@
-export default function Result({ message, playAgain }: { message: {top: string; bottom: string}; playAgain:() => void }) {
+import { IResultProps } from "@/lib/types";
+
+export default function Result({ message, playAgain }: IResultProps) {
   return (
     <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#EDBC06]/80 z-10 w-full text-3xl xs:text-4xl lg:text-5xl/snug text-center font-poke py-6 text-[#1D2C5E] tracking-wider result-bg">
       <h2 className="result-text">

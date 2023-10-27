@@ -1,34 +1,30 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import PokeCard from "./PokeCard";
 import { usePathname } from "next/navigation";
+import PokeCard from "./PokeCard";
 import { GameDetails } from "../game-info/GameDetails";
 import ReactConfetti from "../ui/ReactConfetti";
-import { exposeMatchers, finalPokemonArray, generateRandomPokemons } from "../../utils/functions";
 import CountdownBeforeStart from "../game-info/CountdownBeforeStart";
-import { PokemonCard, PokemonResponse, RootPokemonResponse } from "@/lib/pokeapi/types";
 import Result from "../game-info/Result";
 import CardsLoadingSkeleton from "../ui/CardSkeleton";
 import SomethingWentWrong from "../error/SomethingWentWrong";
+import { exposeMatchers, finalPokemonArray, generateRandomPokemons, getPokemons } from "../../utils/functions";
+import { PokemonCard, PokemonResponse } from "@/lib/pokeapi/types";
+import { IPokeDexProps } from "@/lib/types";
 
-interface PokeDexProps {
-  containerClass: string;
-  gridClass: string;
-  cardWidth?: string;
-  imageSize?: number;
+const endGameMessage = {
+  win: {
+    top: "You Won!",
+    bottom: "Congratulations!"
+  },
+  lose: {
+    top: "Time is Up!",
+    bottom: "Better Luck Next Time!"
+  }
 }
 
-async function getPokemons() {
-  const res = await fetch('https://pokeapi.co/api/v2/pokemon/?offset=0&limit=50');
-  if (!res.ok) {
-    throw new Error('Failed to fetch data');
-  }
-  const data: RootPokemonResponse = await res.json();
-  return data;
-};
-
-export default function PokeDex({ containerClass, gridClass, cardWidth, imageSize }: PokeDexProps) {
+export default function PokeDex({ containerClass, gridClass, cardWidth, imageSize }: IPokeDexProps) {
   const path = usePathname();
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>();
 
@@ -49,11 +45,13 @@ export default function PokeDex({ containerClass, gridClass, cardWidth, imageSiz
       setIsLoading(false);
     }).catch(error => {
       console.log(error);
-      setError(true)
+      setError(true);
     });
   }, []);
 
   useEffect(() => {
+    /* choose certain amount of pokemons depending on the difficulty,
+    duplicate and shuffle them, then set it to randomPokemons array */
     if(path === '/easy' && pokemons) {
       let pokeArray = generateRandomPokemons(pokemons, 8);
       let pokeCardsArray = finalPokemonArray(pokeArray);
@@ -73,6 +71,7 @@ export default function PokeDex({ containerClass, gridClass, cardWidth, imageSiz
   }, [pokemons]);
 
   useEffect(() => {
+    // to prevent unnecessary renders, check if there is any errors first
     if(!error) {
       const countdown = setInterval(() => {
         if(startIn > 0) {
@@ -87,6 +86,7 @@ export default function PokeDex({ containerClass, gridClass, cardWidth, imageSiz
   }, [startIn]);
 
   useEffect(() => {
+    // startIn === 0 condition is for playAgain function, otherwise isEnd becomes true on re-render
     const countdown = setInterval(() => {
       if ((timer <= 0 || pairs === 0) && startIn === 0) {
         setIsEnd(true);
@@ -161,34 +161,34 @@ export default function PokeDex({ containerClass, gridClass, cardWidth, imageSiz
   }
 
   return (
-    <div className={containerClass}>
+    <div className={`flex flex-col w-full py-4 items-center ${containerClass}`}>
       {startIn > 0 && <CountdownBeforeStart countdown={startIn} />}
       <GameDetails
         timer={timer}
         pairs={pairs}
         moveCounter={moveCounter}
         />
-      <div className={gridClass}>
+      <div className={`grid grid-cols-2 justify-center gap-2 w-max ${gridClass}`}>
         {isLoading ? 
           <CardsLoadingSkeleton cardWidth={cardWidth} /> :
           memoizedRandomPokemons?.map((poke) => 
             <PokeCard
-            key={poke.id}
-            cardWidth={cardWidth}
-            imageSize={imageSize}
-            poke={poke}
-            randomPokemons={randomPokemons}
-            setRandomPokemons={setRandomPokemons}
-            cardFlipped={cardFlipped}
-            setCardFlipped={setCardFlipped}
-            isEnd={isEnd}
-            setError={setError}
+              key={poke.id}
+              cardWidth={cardWidth}
+              imageSize={imageSize}
+              poke={poke}
+              randomPokemons={randomPokemons}
+              setRandomPokemons={setRandomPokemons}
+              cardFlipped={cardFlipped}
+              setCardFlipped={setCardFlipped}
+              isEnd={isEnd}
+              setError={setError}
             />)
           }
       </div>
       {isEnd &&
       <Result
-        message={pairs === 0 ? {top: "You Won!", bottom: "Congratulations!"} : {top: "Time is Up!", bottom: "Better Luck Next Time!"}}
+        message={pairs === 0 ? endGameMessage.win : endGameMessage.lose}
         playAgain={playAgain}
       />}
       {pairs === 0 && <ReactConfetti />}

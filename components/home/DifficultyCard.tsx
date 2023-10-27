@@ -1,12 +1,6 @@
-import Image, { StaticImageData } from "next/image";
+import { Difficulty } from "@/lib/types";
+import Image from "next/image";
 import Link from "next/link";
-
-interface Difficulty {
-  id: string,
-  name: string,
-  url: string,
-  img: StaticImageData
-}
 
 export default function DifficultyCard({ item }: { item: Difficulty }) {
   return (

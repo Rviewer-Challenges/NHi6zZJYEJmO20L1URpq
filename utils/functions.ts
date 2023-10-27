@@ -1,5 +1,24 @@
-import { Pokemon, PokemonCard, PokemonResponse } from "@/lib/pokeapi/types";
+import { Pokemon, PokemonCard, PokemonResponse, RootPokemonResponse, Sprites } from "@/lib/pokeapi/types";
 import { nanoid } from "nanoid";
+
+export async function getPokemons() {
+  const res = await fetch('https://pokeapi.co/api/v2/pokemon/?offset=0&limit=50');
+  if (!res.ok) {
+    throw new Error('Failed to fetch data');
+  }
+  const data: RootPokemonResponse = await res.json();
+  return data;
+};
+
+export async function getPokemon(url: string) {
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error('Failed to fetch data');
+  }
+  const data = await res.json();
+  const sprites: Sprites = data.sprites;
+  return sprites;
+}
 
 export function generateRandomPokemons(arr: PokemonResponse[], limit: number) {
   const copyArr = arr.slice();
@@ -64,6 +83,9 @@ export function finalPokemonArray(arr: PokemonResponse[]) {
 
 export function exposeMatchers(arr: PokemonCard[] | undefined, setArr: React.Dispatch<React.SetStateAction<PokemonCard[] | undefined>>) {
   if(arr) {
+    /* check if there are more than 1 not found card flipped 
+      and if there is, check if their id's are matched. 
+      If yes, set isFound to true */
     const flippedCards = arr.filter(poke => poke.flip && !poke.isFound);
     if(flippedCards.length > 1) {
       const [poke1, poke2] = flippedCards;
