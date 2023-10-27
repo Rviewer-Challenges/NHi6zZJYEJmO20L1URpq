@@ -3,14 +3,14 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import PokeCard from "./PokeCard";
 import { usePathname } from "next/navigation";
-import { GameDetails } from "./GameDetails";
-import ReactConfetti from "./ReactConfetti";
-import { exposeMatchers, finalPokemonArray, generateRandomPokemons } from "./utils/functions";
-import CountdownBeforeStart from "./CountdownBeforeStart";
+import { GameDetails } from "../game-info/GameDetails";
+import ReactConfetti from "../ui/ReactConfetti";
+import { exposeMatchers, finalPokemonArray, generateRandomPokemons } from "../../utils/functions";
+import CountdownBeforeStart from "../game-info/CountdownBeforeStart";
 import { PokemonCard, PokemonResponse, RootPokemonResponse } from "@/lib/pokeapi/types";
-import Result from "./Result";
-import CardsLoadingSkeleton from "./CardSkeleton";
-import SomethingWentWrong from "./SomethingWentWrong";
+import Result from "../game-info/Result";
+import CardsLoadingSkeleton from "../ui/CardSkeleton";
+import SomethingWentWrong from "../error/SomethingWentWrong";
 
 interface PokeDexProps {
   containerClass: string;

@@ -1,4 +1,4 @@
-import PokeDex from "@/components/PokeDex";
+import PokeDex from "@/components/pokemon/PokeDex";
 
 export default function NormalLevel() {
   return (

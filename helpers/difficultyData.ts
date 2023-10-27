@@ -1,7 +1,7 @@
 import { nanoid } from 'nanoid';
-import easy from '@/components/assets/img/easy.jpg';
-import normal from '@/components/assets/img/normal.jpg';
-import hard from '@/components/assets/img/hard.jpg';
+import easy from '@/assets/img/easy.jpg';
+import normal from '@/assets/img/normal.jpg';
+import hard from '@/assets/img/hard.jpg';
 
 export const data = [
   {

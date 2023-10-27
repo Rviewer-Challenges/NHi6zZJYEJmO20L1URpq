@@ -1,4 +1,4 @@
-import PokeballLoading from "@/components/PokeballLoading";
+import PokeballLoading from "@/components/ui/PokeballLoading";
 
 export default function Loader() {
   return <PokeballLoading />

@@ -1,5 +1,5 @@
-import DifficultyCard from "@/components/DifficultyCard"
-import { data } from "@/components/helpers/difficultyData"
+import DifficultyCard from "@/components/home/DifficultyCard"
+import { data } from "@/helpers/difficultyData"
 
 export default function Home() {
   return (

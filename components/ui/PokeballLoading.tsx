@@ -9,6 +9,7 @@ export default function PokeballLoading() {
         width={150}
         height={150}
         className="animate-bounce"
+        priority
       />
     </div>
   )

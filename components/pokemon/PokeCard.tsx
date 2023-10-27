@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { exposeMatchers } from "./utils/functions"; 
+import { exposeMatchers } from "../../utils/functions"; 
 import { PokemonCard, Sprites } from "@/lib/pokeapi/types";
 
 interface PokeCardProps {

@@ -1,4 +1,4 @@
-import PokeDex from "@/components/PokeDex";
+import PokeDex from "@/components/pokemon/PokeDex";
 
 async function delay(num: number) {
   return new Promise((resolve) => setTimeout(resolve, num));
