@@ -14,6 +14,7 @@ interface PokeCardProps {
   cardFlipped: number;
   setCardFlipped: Dispatch<SetStateAction<number>>;
   isEnd: boolean;
+  setError: Dispatch<SetStateAction<boolean>>
 }
 
 async function getPokemon(url: string) {
@@ -26,13 +27,16 @@ async function getPokemon(url: string) {
   return sprites;
 }
 
-export default function PokeCard({ cardWidth, imageSize, poke, randomPokemons, setRandomPokemons, cardFlipped, setCardFlipped, isEnd }: PokeCardProps) {
+export default function PokeCard({ cardWidth, imageSize, poke, randomPokemons, setRandomPokemons, cardFlipped, setCardFlipped, isEnd, setError }: PokeCardProps) {
   const [pokemon, setPokemon] = useState<string>();
 
   useEffect(() => {
     getPokemon(poke.url)
     .then(res => setPokemon(res.other['official-artwork'].front_default))
-    .catch(err => console.error(err));
+    .catch(err => {
+      console.error(err);
+      setError(true);
+    });
   }, []);
 
   const handleFlip = (id: string) => {

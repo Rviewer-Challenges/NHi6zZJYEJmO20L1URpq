@@ -4,7 +4,7 @@ export default function Result({ message, playAgain }: { message: {top: string; 
       <h2 className="result-text">
         {message.top} <br /> {message.bottom}
       </h2>
-      <h2 className="cursor-pointer max-h-0 overflow-hidden play-again mt-4 animate-ping hover:text-white" onClick={playAgain}>- Play Again -</h2>
+      <h2 className="cursor-pointer w-max mx-auto max-h-0 overflow-hidden play-again mt-4 animate-ping hover:text-white" onClick={playAgain}>- Play Again -</h2>
     </div>
   )
 }

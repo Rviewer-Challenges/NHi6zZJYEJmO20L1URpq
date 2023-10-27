@@ -10,6 +10,7 @@ import CountdownBeforeStart from "./CountdownBeforeStart";
 import { PokemonCard, PokemonResponse, RootPokemonResponse } from "@/lib/pokeapi/types";
 import Result from "./Result";
 import CardsLoadingSkeleton from "./CardSkeleton";
+import SomethingWentWrong from "./SomethingWentWrong";
 
 interface PokeDexProps {
   containerClass: string;
@@ -21,7 +22,7 @@ interface PokeDexProps {
 async function getPokemons() {
   const res = await fetch('https://pokeapi.co/api/v2/pokemon/?offset=0&limit=50');
   if (!res.ok) {
-    throw new Error('Failed to fetch data')
+    throw new Error('Failed to fetch data');
   }
   const data: RootPokemonResponse = await res.json();
   return data;
@@ -40,11 +41,15 @@ export default function PokeDex({ containerClass, gridClass, cardWidth, imageSiz
   const [timer, setTimer] = useState(60);
   const [pairs, setPairs] = useState<number | undefined>(undefined);
   const [moveCounter, setMoveCounter] = useState(0);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     getPokemons().then((res) => {
       setPokemons(res.results);
       setIsLoading(false);
+    }).catch(error => {
+      console.log(error);
+      setError(true)
     });
   }, []);
 
@@ -68,16 +73,18 @@ export default function PokeDex({ containerClass, gridClass, cardWidth, imageSiz
   }, [pokemons]);
 
   useEffect(() => {
-    const countdown = setInterval(() => {
-      if(startIn > 0) {
-        setStartIn(prevStartIn => prevStartIn - 1);
-      } else {
-        clearInterval(countdown);
-      }
-    }, 1000);
-
-    return () => clearInterval(countdown);
-  }, [startIn])
+    if(!error) {
+      const countdown = setInterval(() => {
+        if(startIn > 0) {
+          setStartIn(prevStartIn => prevStartIn - 1);
+        } else {
+          clearInterval(countdown);
+        }
+      }, 1000);
+      
+      return () => clearInterval(countdown);
+    }
+  }, [startIn]);
 
   useEffect(() => {
     const countdown = setInterval(() => {
@@ -138,12 +145,19 @@ export default function PokeDex({ containerClass, gridClass, cardWidth, imageSiz
     getPokemons().then((res) => {
       setPokemons(res.results);
       setIsLoading(false);
+    }).catch(error => {
+      console.log(error);
+      setError(true)
     });
     
     setCardFlipped(0);
     setIsEnd(false);
     setTimer(60);
     setMoveCounter(0);
+  }
+
+  if(error) {
+    return <SomethingWentWrong />
   }
 
   return (
@@ -168,6 +182,7 @@ export default function PokeDex({ containerClass, gridClass, cardWidth, imageSiz
             cardFlipped={cardFlipped}
             setCardFlipped={setCardFlipped}
             isEnd={isEnd}
+            setError={setError}
             />)
           }
       </div>
