@@ -1,4 +1,63 @@
+
 # Memory Game
+
+Classic memory game with Pokémon theme. 
+
+There are 3 difficulties and you have 60 seconds to beat each of them.
+
+It is not possible to play very effectively on mobile devices, but for the sake of responsive design, it also looks decent on mobile.
+
+Can you match the all Pokémons? Have fun!
+
+
+## Authors
+
+- [@ATErcan](https://www.github.com/ATErcan)
+All codes in this project are written by me.
+
+
+## Tech Stack
+
+HTML, CSS, JavaScript, TypeScript, Next.js, Tailwind, react-confetti, nanoid
+
+
+## Demo
+
+https://ate-pokememory.vercel.app/
+
+![main](main-menu.png)
+
+![easy](easy.png)
+
+![normal](normal.png)
+
+![hard](hard.png)
+
+## Installation
+All you need is to clone the project and install the dependencies
+```bash
+  $ git clone https://github.com/ATErcan/adRespect.git
+
+  $ npm install
+```
+## 🔗 Links
+[![portfolio](https://img.shields.io/badge/my_portfolio-000?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ate-portfolio-next.vercel.app/)
+[![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/ahmet-talha-ercan/)
+
+
+## Special Thanks
+
+I would like to thank rviewer.io for inspiring me to create such a project.
+
+## Appendix
+
+On rviewer.io, when developers join a challenge, rviewer.io assigns them a repository to work on. Developers create branches, make commits and create pull requests in that repository.
+
+However, this was my first challenge on rviewer.io and I wasn't aware of that. So, this project was originally developed on my personal repository. I added this repository as a remote origin so reviewers can track my development progress and commit history. But unfortunately, I couldn't create a pull request because, when I tried to do it, I've gotten an error as 'The branches that you're trying to merge have entirely different commit histories'. Because of that, I had to push the whole project directly to the main branch.
+ 
+Aside from that, all my commits are here for you to review. Thank you for giving me a chance at this challenge.
+
+# rviewer.io - Memory Game Challenge
 
 Who hasn't played card games at some point? From a very young age to a beer night with friends, right?
 
